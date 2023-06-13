@@ -7,12 +7,14 @@ const AddCard = () => {
 
     const navigate=useNavigate()
   const [customerId, setCustomerId] = useState();
+  const [userid,setUserId]=useState(1)
 
   console.log(customerId, 'customerId');
 
   useEffect(() => {
+    console.log(userid,'----------------------------------');
     axios
-      .get('http://localhost:3000/get-customer')
+      .get(`http://localhost:3000/get-customer/${userid}`,)
       .then((res) => {
         console.log('res ');
         console.log(res.data[0]);
@@ -21,7 +23,7 @@ const AddCard = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [userid]);
 
   const stripe = useStripe();
   const elements = useElements();
@@ -58,6 +60,7 @@ const AddCard = () => {
 
   return (
     <form onSubmit={handleSubmit}>
+    <input type='text' onChange={(e)=>setUserId(e.target.value)} placeholder='enter userId'></input>
       <CardElement   />
       <button type="submit">Add Card</button>
       {errorMessage && <div>{errorMessage}</div>}

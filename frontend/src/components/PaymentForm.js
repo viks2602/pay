@@ -20,8 +20,8 @@ const PaymentForm = () => {
 
             
             axios.post('http://localhost:3000/idapi',{customerId:`${res.data[0].idcustomer}`}).then((res)=>{
-                console.log(res.data.message,'res00------------------');
-                setpaymentmethodid(res.data.message)
+                console.log(res.data.paymentMethodidsent,'res00------------------');
+                setpaymentmethodid(res.data.paymentMethodidsent)
             })
        
       })

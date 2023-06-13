@@ -63,9 +63,10 @@ app.post('/create-customer', async (req, res) => {
   }
 });
 
-app.get('/get-customer', async (req, res) => {
-  //   const { id } = req.body;
-  const id = 1;
+app.get('/get-customer/:id', async (req, res) => {
+  const { id } = req.params;
+  console.log('id', req.params);
+  // const id = 1;
 
   try {
     // Store the customer ID in the database
@@ -96,11 +97,11 @@ app.post('/add-card', async (req, res) => {
     });
 
     // Set the attached payment method as the default for the customer
-    await stripe.customers.update(customerId, {
-      invoice_settings: {
-        default_payment_method: paymentMethodId,
-      },
-    });
+    // await stripe.customers.update(customerId, {
+    //   invoice_settings: {
+    //     default_payment_method: paymentMethodId,
+    //   },
+    // });
 
     res.json({ message: 'Card added successfully.' });
   } catch (error) {
@@ -113,21 +114,38 @@ app.post('/add-card', async (req, res) => {
 
 app.post('/idapi', async (req, res) => {
   const { customerId } = req.body;
-  console.log(customerId,'----------------------------------------------------------------------');
+  console.log(
+    customerId,
+    '----------------------------------------------------------------------'
+  );
   try {
-    
-    stripe.customers.retrieve(`${customerId}`, (err, customer) => {
-        //returns customer object we just need payment mehod id here
+    stripe.customers.listPaymentMethods(`${customerId}`, (err, pmethod) => {
       if (err) {
-        console.log('err', err);
+        console.log('list method error');
       }
-      if (customer) {
-     console.log('get payment id log---------------',customer.invoice_settings.default_payment_method);
-     res.json({ message: customer.invoice_settings.default_payment_method });
+      if (pmethod) {
+        console.log('pmethod -------------------------', pmethod.data);
+        res.json({ paymentMethodidsent: pmethod.data });
       } else {
-        console.log('somthing went wrong');
+        console.log('something went wrong');
       }
     });
+    // stripe.customers.retrieve(`${customerId}`, (err, customer) => {
+    //   //returns customer object we just need payment mehod id here
+    //   if (err) {
+    //     console.log('err', err);
+    //   }
+    //   if (customer) {
+    //     console.log('customer----------------------------------------------------------------------------------------',customer);
+    //     console.log(
+    //       'get payment id log---------------',
+    //       customer.invoice_settings.default_payment_method
+    //     );
+    //     res.json({ message: customer.invoice_settings.default_payment_method });
+    //   } else {
+    //     console.log('somthing went wrong');
+    //   }
+    // });
   } catch (error) {}
 });
 
@@ -138,6 +156,7 @@ app.post('/payment', cors(), async (req, res) => {
 
   try {
     const payment = await stripe.paymentIntents.create({
+      payment_method_types: ['card', 'apple_pay'],
       amount,
       currency: 'USD',
       customer: idcustomer,
@@ -147,6 +166,7 @@ app.post('/payment', cors(), async (req, res) => {
       confirm: true,
     });
     // console.log('payment', payment);
+    console.log('payment zal n bho');
 
     stripe.paymentIntents;
 
