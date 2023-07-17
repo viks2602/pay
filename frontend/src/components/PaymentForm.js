@@ -12,7 +12,7 @@ const PaymentForm = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3000/get-customer')
+      .get('http://localhost:3000/get-customer/1')
       .then((res) => {
         console.log('res ');
         console.log(res.data[0]);
@@ -20,8 +20,8 @@ const PaymentForm = () => {
 
             
             axios.post('http://localhost:3000/idapi',{customerId:`${res.data[0].idcustomer}`}).then((res)=>{
-                console.log(res.data.paymentMethodidsent,'res00------------------');
-                setpaymentmethodid(res.data.paymentMethodidsent)
+                console.log(res.data.paymentMethodidsent[0].id,'res00------------------');
+                setpaymentmethodid(res.data.paymentMethodidsent[0].id)
             })
        
       })

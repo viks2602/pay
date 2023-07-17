@@ -1,6 +1,6 @@
 const express = require('express');
 const stripe = require('stripe')(
-  'sk_test_51N3e2JSIOp89KyYyREsJOdBVvVeBEeK5s96FrS3s99gXcYQLp0HeLvbSe0WM4fCWpmkRcKAeNVbi7ENEKkVTNK0b005bP6nlRM'
+  'sk_test_key'
 );
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
@@ -156,9 +156,9 @@ app.post('/payment', cors(), async (req, res) => {
 
   try {
     const payment = await stripe.paymentIntents.create({
-      payment_method_types: ['card', 'apple_pay'],
+      payment_method_types: ['card'],
       amount,
-      currency: 'USD',
+      currency: 'inr',
       customer: idcustomer,
       description: 'try description',
       payment_method: paymentid,
@@ -172,28 +172,28 @@ app.post('/payment', cors(), async (req, res) => {
 
     res.json({ payment });
   } catch (error) {
-    // console.log('error', error);
+    console.log('error', error);
     res.json({
       message: 'payment failed',
       success: false,
     });
   }
 });
-// const retriveCustomer = () => {
-//   stripe.customers.retrieve('cus_O2iHpqCQ9ULmyA', (err, customer) => {
-//     if (err) {
-//       console.log('err', err);
-//     }
-//     if (customer) {
-//       console.log('customer', JSON.stringify(customer, null, 2));
-//       console.log(customer.invoice_settings.default_payment_method);
-//     } else {
-//       console.log('somthing went wrong');
-//     }
-//   });
-// };
+const retriveCustomer = () => {
+  stripe.customers.retrieve('cus_OGJ65Xtq0Xejun', (err, customer) => {
+    if (err) {
+      console.log('err', err);
+    }
+    if (customer) {
+      console.log('customer', JSON.stringify(customer, null, 2));
+      console.log(customer.invoice_settings.default_payment_method);
+    } else {
+      console.log('somthing went wrong');
+    }
+  });
+};
 
-// retriveCustomer();
+retriveCustomer();
 
 app.listen(3000, () => {
   console.log('Server listening on port 3000');

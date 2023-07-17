@@ -48,6 +48,7 @@ const AddCard = () => {
       setErrorMessage('Error adding card. Please try again.');
     } else {
       console.log('customerId', customerId);
+      console.log('customer payment method id -->',paymentMethod.id);
       const body = {
         customerId: customerId,
         paymentMethodId: paymentMethod.id,
